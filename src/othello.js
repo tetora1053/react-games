@@ -3,7 +3,28 @@ import React from 'react';
 export default class Game extends React.Component {
   render() {
     return (
-      <Board />
+      <div>
+        <Desc />
+        <Board />
+      </div>
+    );
+  }
+}
+
+class Desc extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      turn: "black",
+    }
+  }
+
+  render() {
+    const turn = (this.state.turn) ? '黒' : '白';
+    return (
+      <div>
+        <span>{turn}</span>のターン
+      </div>
     );
   }
 }
@@ -37,18 +58,37 @@ class SquareRow extends React.Component {
 class Square extends React.Component {
   constructor(props) {
     super(props);
-    this.putStone = this.putStone.bind(this);
+    this.hundleClick = this.hundleClick.bind(this);
+    this.state = {
+      isClick: false,
+    }
   }
 
-  putStone() {
-    console.log("putStone");
+  hundleClick() {
+    console.log("hundleClick");
+    this.setState({isClick: true});
   }
 
   render() {
     return (
-      <button className="square" onClick={this.putStone}>
-        <div className="stone"></div>
+      <button className="square" onClick={this.hundleClick}>
+        <Stone isClick={this.state.isClick}/>
       </button>
+    );
+  }
+}
+
+class Stone extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    if (!this.props.isClick) {
+      return null;
+    }
+    return (
+        <div className="stone"></div>
     );
   }
 }
