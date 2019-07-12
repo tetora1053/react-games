@@ -5,7 +5,16 @@ export default class Game extends React.Component {
     super();
     let squareStates = [];
     for (let i = 0; i < 64; i++) {
-      squareStates[i] = '';
+      switch (true) {
+        case i === 27 || i === 36:
+          squareStates[i] = 'white';
+          break;
+        case i === 28 || i === 35:
+          squareStates[i] = 'black';
+          break;
+        default:
+          squareStates[i] = '';
+      }
     }
     this.state = {
       turn: 'black',
