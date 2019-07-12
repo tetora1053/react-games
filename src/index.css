@@ -1,0 +1,10 @@
+.stone {
+    border: solid 1px;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+}
+
+.bg-color-black {
+    background-color: black;
+}
