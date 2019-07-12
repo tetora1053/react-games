@@ -21,18 +21,55 @@ export default class Game extends React.Component {
       squareStates: squareStates,
     }
     this.handleSquareClick = this.handleSquareClick.bind(this);
+    this.reverseStone = this.reverseStone.bind(this);
   }
 
   handleSquareClick(e) {
     console.log(e.target.value);
+    const square_number = e.target.value;
+    let square_states = this.state.squareStates;
+    if (square_states[square_number] !== '') {
+      console.log("you cant put stone here.");
+      return;
+    }
     const current_turn = this.state.turn;
+
+    const res = this.reverseStone(square_number, current_turn, 'left', true);
+    if (!res) {
+      console.log("you cant put stone here.");
+      return;
+    }
+
     const next_turn = (current_turn === 'black') ? 'white': 'black';
-    let squareStates = this.state.squareStates;
-    squareStates[e.target.value] = current_turn;
+    square_states[square_number] = current_turn;
     this.setState({
       turn: next_turn,
-      squareStates: squareStates,
+      squareStates: square_states,
     });
+  }
+
+  reverseStone(square_number, current_turn, direction, is_base = true, limit_square_number = null) {
+    if (square_number < limit_square_number) {
+      return false;
+    }
+    if (is_base) {
+      limit_square_number = square_number - (square_number % 8);
+    }
+    const next_square_state = this.state.squareStates[square_number - 1];
+    if (next_square_state === '') {
+      return false;
+    }
+    if ((is_base && next_square_state !== current_turn) || (!is_base && next_square_state !== current_turn)) {
+      if (this.reverseStone(square_number - 1, current_turn, direction, false, limit_square_number)) {
+        let square_states = this.state.squareStates;
+        square_states[square_number - 1] = current_turn;
+        this.setState({squareStates: square_states});
+        return true;
+      }
+    } else if (!is_base && next_square_state === current_turn) {
+      return true;
+    }
+    return false;
   }
 
   render() {
