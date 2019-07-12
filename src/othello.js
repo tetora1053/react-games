@@ -35,9 +35,20 @@ class SquareRow extends React.Component {
 }
 
 class Square extends React.Component {
+  constructor(props) {
+    super(props);
+    this.putStone = this.putStone.bind(this);
+  }
+
+  putStone() {
+    console.log("putStone");
+  }
+
   render() {
     return (
-      <button></button>
+      <button className="square" onClick={this.putStone}>
+        <div className="stone"></div>
+      </button>
     );
   }
 }

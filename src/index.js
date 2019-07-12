@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ChildComponent from './othello';
+import './index.css';
 
 class ParentComponent extends React.Component {
   render() {
