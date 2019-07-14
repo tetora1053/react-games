@@ -190,7 +190,9 @@ class Board extends React.Component {
       );
     }
     return (
-      <div>
+      <div
+        id="board"
+      >
         {squareRows}
       </div>
     );
@@ -228,12 +230,12 @@ class Square extends React.Component {
 
   render() {
     return (
-      <button
+      <div
         className="square"
         onClick={this.props.handleSquareClick}
         value={this.props.square_number}>
         <Stone squareState={this.props.squareStates[this.props.square_number]}/>
-      </button>
+      </div>
     );
   }
 }
