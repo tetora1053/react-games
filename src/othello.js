@@ -20,9 +20,16 @@ export default class Game extends React.Component {
       turn: 'black',
       squareStates: squareStates,
     }
+    this.skipTurn = this.skipTurn.bind(this);
     this.handleSquareClick = this.handleSquareClick.bind(this);
     this.reverseStone = this.reverseStone.bind(this);
     this.getGameResult = this.getGameResult.bind(this);
+  }
+
+  skipTurn() {
+    this.setState({
+      turn: (this.state.turn === "black") ? "white" : "black"
+    });
   }
 
   handleSquareClick(e) {
@@ -229,6 +236,7 @@ export default class Game extends React.Component {
     return (
       <div>
         <Desc turn={this.state.turn}/>
+        <SkipTurn skipTurn={this.skipTurn}/>
         <Board
           turn={this.state.turn}
           handleSquareClick={this.handleSquareClick}
@@ -249,6 +257,20 @@ class Desc extends React.Component {
     return (
       <div>
         <p><span>{turn_str}</span>のターン</p>
+      </div>
+    );
+  }
+}
+
+class SkipTurn extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div>
+        <button onClick={this.props.skipTurn}>パス</button>
       </div>
     );
   }
