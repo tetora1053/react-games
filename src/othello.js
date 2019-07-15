@@ -22,6 +22,7 @@ export default class Game extends React.Component {
     }
     this.handleSquareClick = this.handleSquareClick.bind(this);
     this.reverseStone = this.reverseStone.bind(this);
+    this.getGameResult = this.getGameResult.bind(this);
   }
 
   handleSquareClick(e) {
@@ -195,7 +196,36 @@ export default class Game extends React.Component {
       return limit_square_number;
   }
 
+  getGameResult() {
+    const black_cnt = this.state.squareStates.filter((square_state) => square_state === "black").length;
+    const white_cnt = this.state.squareStates.filter((square_state) => square_state === "white").length;
+    const game_result = {
+      "is_draw" : false,
+      "winner" : "",
+      "winner_str" : "",
+      "diff" : 0,
+    };
+    if (black_cnt === white_cnt) {
+      game_result.is_draw = true;
+    } else {
+      game_result.winner = (black_cnt > white_cnt) ? "black" : "white";
+      game_result.diff = Math.abs(black_cnt - white_cnt);
+    }
+    return game_result;
+  }
+
   render() {
+    console.log(this.state.squareStates)
+    if (!this.state.squareStates.some((square_state) => square_state == "")) {
+      console.log("ゲーム終了")
+      const game_result = this.getGameResult();
+      if (game_result.is_draw) {
+        console.log("引き分けです");
+      } else {
+        const winner_str = (game_result.winner === "black") ? "黒" : "白";
+        console.log(winner_str + "の" + game_result.diff + "石勝ちです");
+      }
+    }
     return (
       <div>
         <Desc turn={this.state.turn}/>
