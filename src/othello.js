@@ -1,4 +1,8 @@
 import React from 'react';
+import Desc from './components/Desc';
+import ResetGame from './components/ResetGame';
+import SkipTurn from './components/SkipTurn';
+import Board from './components/Board';
 
 export default class Game extends React.Component {
   constructor() {
@@ -255,132 +259,6 @@ export default class Game extends React.Component {
           squareStates={this.state.squareStates}
         />
       </div>
-    );
-  }
-}
-
-class Desc extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const turn_str = (this.props.turn === 'black') ? '黒' : '白';
-    return (
-      <div>
-        <p><span>{turn_str}</span>のターン</p>
-      </div>
-    );
-  }
-}
-
-class ResetGame extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div>
-        <button onClick={this.props.resetGame}>リセット</button>
-      </div>
-    );
-  }
-}
-
-class SkipTurn extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div>
-        <button onClick={this.props.skipTurn}>パス</button>
-      </div>
-    );
-  }
-}
-
-class Board extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    let squareRows = [];
-    for (let i = 0; i < 8; i++) {
-      squareRows.push(
-        <SquareRow
-          key={i}
-          row_number={i}
-          handleSquareClick={this.props.handleSquareClick}
-          squareStates={this.props.squareStates}
-        />
-      );
-    }
-    return (
-      <div id="board">
-        {squareRows}
-      </div>
-    );
-  }
-}
-
-class SquareRow extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    let squares = [];
-    for (let i = 0; i < 8; i++) {
-      let square_number = this.props.row_number * 8 + i;
-      squares.push(
-        <Square
-          key={i}
-          square_number={square_number}
-          handleSquareClick={this.props.handleSquareClick}
-          squareStates={this.props.squareStates}
-        />
-      );
-    }
-    return (
-      <div>{squares}</div>
-    );
-  }
-}
-
-class Square extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <button
-        className="square"
-        onClick={this.props.handleSquareClick}
-        value={this.props.square_number}>
-        <Stone squareState={this.props.squareStates[this.props.square_number]}/>
-      </button>
-    );
-  }
-}
-
-class Stone extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const square_state = this.props.squareState;
-    if (square_state === '') {
-      return null;
-    }
-    const class_name = (square_state === 'black') ? 'black-stone' : 'white-stone';
-    return (
-        <div className={class_name}></div>
     );
   }
 }
