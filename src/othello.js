@@ -3,6 +3,17 @@ import React from 'react';
 export default class Game extends React.Component {
   constructor() {
     super();
+    this.state = {
+      turn: 'black',
+      squareStates: this.getInitialSquareStates(),
+    }
+    this.skipTurn = this.skipTurn.bind(this);
+    this.handleSquareClick = this.handleSquareClick.bind(this);
+    this.reverseStone = this.reverseStone.bind(this);
+    this.getGameResult = this.getGameResult.bind(this);
+  }
+
+  getInitialSquareStates() {
     let squareStates = [];
     for (let i = 0; i < 64; i++) {
       switch (true) {
@@ -16,14 +27,7 @@ export default class Game extends React.Component {
           squareStates[i] = '';
       }
     }
-    this.state = {
-      turn: 'black',
-      squareStates: squareStates,
-    }
-    this.skipTurn = this.skipTurn.bind(this);
-    this.handleSquareClick = this.handleSquareClick.bind(this);
-    this.reverseStone = this.reverseStone.bind(this);
-    this.getGameResult = this.getGameResult.bind(this);
+    return squareStates;
   }
 
   skipTurn() {
