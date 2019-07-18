@@ -3,6 +3,18 @@ import React from 'react';
 export default class Game extends React.Component {
   constructor() {
     super();
+    this.state = {
+      turn: 'black',
+      squareStates: this.getInitialSquareStates(),
+    }
+    this.skipTurn = this.skipTurn.bind(this);
+    this.resetGame = this.resetGame.bind(this);
+    this.handleSquareClick = this.handleSquareClick.bind(this);
+    this.reverseStone = this.reverseStone.bind(this);
+    this.getGameResult = this.getGameResult.bind(this);
+  }
+
+  getInitialSquareStates() {
     let squareStates = [];
     for (let i = 0; i < 64; i++) {
       switch (true) {
@@ -16,14 +28,14 @@ export default class Game extends React.Component {
           squareStates[i] = '';
       }
     }
-    this.state = {
+    return squareStates;
+  }
+
+  resetGame() {
+    this.setState({
       turn: 'black',
-      squareStates: squareStates,
-    }
-    this.skipTurn = this.skipTurn.bind(this);
-    this.handleSquareClick = this.handleSquareClick.bind(this);
-    this.reverseStone = this.reverseStone.bind(this);
-    this.getGameResult = this.getGameResult.bind(this);
+      squareStates: this.getInitialSquareStates(),
+    });
   }
 
   skipTurn() {
@@ -222,7 +234,6 @@ export default class Game extends React.Component {
   }
 
   render() {
-    console.log(this.state.squareStates)
     if (!this.state.squareStates.some((square_state) => square_state == "")) {
       console.log("ゲーム終了")
       const game_result = this.getGameResult();
@@ -237,6 +248,7 @@ export default class Game extends React.Component {
       <div>
         <Desc turn={this.state.turn}/>
         <SkipTurn skipTurn={this.skipTurn}/>
+        <ResetGame resetGame={this.resetGame}/>
         <Board
           turn={this.state.turn}
           handleSquareClick={this.handleSquareClick}
@@ -257,6 +269,20 @@ class Desc extends React.Component {
     return (
       <div>
         <p><span>{turn_str}</span>のターン</p>
+      </div>
+    );
+  }
+}
+
+class ResetGame extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div>
+        <button onClick={this.props.resetGame}>リセット</button>
       </div>
     );
   }
