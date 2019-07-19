@@ -1,8 +1,8 @@
 import React from 'react';
-import Desc from './components/Desc';
-import ResetGame from './components/ResetGame';
-import SkipTurn from './components/SkipTurn';
-import Board from './components/Board';
+import Desc from './Desc';
+import ResetGame from './ResetGame';
+import SkipTurn from './SkipTurn';
+import Board from './Board';
 
 export default class Game extends React.Component {
   constructor() {
@@ -14,7 +14,7 @@ export default class Game extends React.Component {
     this.skipTurn = this.skipTurn.bind(this);
     this.resetGame = this.resetGame.bind(this);
     this.handleSquareClick = this.handleSquareClick.bind(this);
-    this.reverseStone = this.reverseStone.bind(this);
+    this.getReverseSquareNums = this.getReverseSquareNums.bind(this);
     this.getGameResult = this.getGameResult.bind(this);
   }
 
@@ -55,13 +55,18 @@ export default class Game extends React.Component {
       console.log("you cant put stone here.");
       return;
     }
-    const current_turn = this.state.turn;
 
     let res = false;
     const direction_arr = ["left", "right", "up", "down", "up-left", "up-right", "down-left", "down-right"];
     for (let i = 0; i < direction_arr.length; i++) {
-      if (this.reverseStone(Number(square_number), current_turn, direction_arr[i], true)) {
+      let reverse_square_nums_result = {can_put: false, square_nums: []};
+      this.getReverseSquareNums(reverse_square_nums_result, Number(square_number), this.state.turn, direction_arr[i], true, null);
+      if (reverse_square_nums_result.can_put) {
         res = true;
+        for (let i = 0; i < reverse_square_nums_result.square_nums.length; i++) {
+          square_states[reverse_square_nums_result.square_nums[i]] = this.state.turn;
+        }
+        this.setState({squareStates: square_states});
       }
     }
     if (!res) {
@@ -69,15 +74,15 @@ export default class Game extends React.Component {
       return;
     }
 
-    const next_turn = (current_turn === 'black') ? 'white': 'black';
-    square_states[square_number] = current_turn;
+    const next_turn = (this.state.turn === 'black') ? 'white': 'black';
+    square_states[square_number] = this.state.turn;
     this.setState({
       turn: next_turn,
       squareStates: square_states,
     });
   }
 
-  reverseStone(square_number, current_turn, direction, is_base = true, limit_square_number = null) {
+  getReverseSquareNums(result = {}, square_number, current_turn, direction, is_base = true, limit_square_number = null) {
     if (!is_base) {
       switch (true) {
         case direction === 'left' && square_number < limit_square_number:
@@ -126,16 +131,15 @@ export default class Game extends React.Component {
       return false;
     }
     if ((is_base && next_square_state !== current_turn) || (!is_base && next_square_state !== current_turn)) {
-      if (this.reverseStone(Number(next_square_number), current_turn, direction, false, limit_square_number)) {
-        let square_states = this.state.squareStates;
-        square_states[next_square_number] = current_turn;
-        this.setState({squareStates: square_states});
-        return true;
+      this.getReverseSquareNums(result, Number(next_square_number), current_turn, direction, false, limit_square_number);
+      if (result.can_put) {
+        result.can_put = true;
+        result.square_nums.push(next_square_number);
       }
     } else if (!is_base && next_square_state === current_turn) {
-      return true;
+      result.can_put = true;
     }
-    return false;
+    return result;
   }
 
   getLimitSquareNumber(direction, square_number) {
