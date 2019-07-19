@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ChildComponent from './othello';
+import ChildComponent from './components/Game';
 import './index.css';
 
 class ParentComponent extends React.Component {
