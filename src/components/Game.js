@@ -17,8 +17,9 @@ export default class Game extends React.Component {
   }
 
   resetGame() {
+    this.refs.board.resetBoard();
     this.setState({
-      turn: 'black',
+      turn: 'black'
     });
   }
 
@@ -35,7 +36,7 @@ export default class Game extends React.Component {
       "is_draw" : false,
       "winner" : "",
       "winner_str" : "",
-      "diff" : 0,
+      "diff" : 0
     };
     if (black_cnt === white_cnt) {
       game_result.is_draw = true;
@@ -76,6 +77,7 @@ export default class Game extends React.Component {
         <Board
           turn={this.state.turn}
           noticeToGame={this.noticeFromBoard}
+          ref="board"
         />
       </div>
     );
