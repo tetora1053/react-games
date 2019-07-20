@@ -5,7 +5,7 @@ export default class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      squareStates: this.getInitialSquareStates(),
+      squareStates: this.getInitialSquareStates()
     }
     this.handleSquareClick = this.handleSquareClick.bind(this);
     this.getReverseSquareNums = this.getReverseSquareNums.bind(this);
@@ -196,6 +196,12 @@ export default class Board extends React.Component {
           break;
       }
       return limit_square_number;
+  }
+
+  resetBoard() {
+    this.setState({
+      squareStates: this.getInitialSquareStates()
+    });
   }
 
   render() {
