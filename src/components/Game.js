@@ -9,11 +9,40 @@ export default class Game extends React.Component {
     super();
     this.state = {
       turn: 'black',
+      isEnd: false,
     }
     this.skipTurn = this.skipTurn.bind(this);
     this.resetGame = this.resetGame.bind(this);
     this.getGameResult = this.getGameResult.bind(this);
     this.noticeFromBoard = this.noticeFromBoard.bind(this);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log(prevState.isEnd);
+    if (prevState.isEnd) {
+      return;
+    }
+
+    let res = this.canPutStone();
+    console.log("canPutStone res : ", res);
+    if (!res) {
+      let next_turn = (this.state.turn === "black") ? "white" : "black";
+      let another_res = this.canPutStone(another_res);
+      if (!another_res) {
+        console.log("game end");
+        return;
+      }
+      this.refs.skip_turn.enable();
+    }
+  }
+
+  canPutStone() {
+    let res = this.refs.board.canPutStone();
+    return res;
+  }
+
+  check() {
+    console.log("check");
   }
 
   resetGame() {
@@ -72,7 +101,10 @@ export default class Game extends React.Component {
     return (
       <div>
         <Desc turn={this.state.turn}/>
-        <SkipTurn skipTurn={this.skipTurn}/>
+        <SkipTurn
+          skipTurn={this.skipTurn}
+          ref="skip_turn"
+        />
         <ResetGame resetGame={this.resetGame}/>
         <Board
           turn={this.state.turn}

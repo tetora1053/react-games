@@ -103,7 +103,8 @@ export default class Board extends React.Component {
     }
     const next_square_state = this.state.squareStates[next_square_number];
     if (next_square_state == undefined || next_square_state == '') {
-      return false;
+      result.can_put = false;
+      return result;
     }
     if ((is_base && next_square_state !== current_turn) || (!is_base && next_square_state !== current_turn)) {
       this.getReverseSquareNums(result, Number(next_square_number), current_turn, direction, false, limit_square_number);
@@ -196,6 +197,22 @@ export default class Board extends React.Component {
           break;
       }
       return limit_square_number;
+  }
+
+  canPutStone(specified_turn = null) {
+    console.log("canPutStone");
+    const direction_arr = ["left", "right", "up", "down", "up-left", "up-right", "down-left", "down-right"];
+    const turn = (specified_turn === null) ? this.props.turn : specified_turn;
+    for (let square_number = 0; square_number < 64; square_number++) {
+      for (let i = 0; i < direction_arr.length; i++) {
+        let reverse_square_nums_result = {can_put: false, square_nums: []};
+        this.getReverseSquareNums(reverse_square_nums_result, Number(square_number), turn, direction_arr[i], true, null);
+        if (reverse_square_nums_result.can_put) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   resetBoard() {
