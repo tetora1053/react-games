@@ -9,18 +9,21 @@ export default class Game extends React.Component {
     super();
     this.state = {
       turn: 'black',
-      isEnd: false,
+      gameResult: {
+        isEnd: false,
+        isDraw: false,
+        winner: "",
+        diff: 0,
+      }
     }
     this.skipTurn = this.skipTurn.bind(this);
     this.resetGame = this.resetGame.bind(this);
-    this.getGameResult = this.getGameResult.bind(this);
     this.noticeFromBoard = this.noticeFromBoard.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(prevState.isEnd);
-    if (prevState.isEnd) {
-      console.log("end completely");
+    if (prevState.gameResult.isEnd) {
+      console.log("already end");
       return;
     }
 
@@ -31,6 +34,25 @@ export default class Game extends React.Component {
       let another_res = this.canPutStone(another_res);
       if (!another_res) {
         console.log("game end");
+        const game_result = this.refs.board.getGameResult();
+        if (game_result.black !== game_result.white) {
+          const winner = (game_result.black > game_result.white) ? "black" : "white";
+          const diff = Math.abs(game_result.black - game_result.white);
+          this.setState({
+            gameResult: {
+              isEnd: true,
+              winner: winner,
+              diff: diff,
+            }
+          });
+        } else {
+          this.setState({
+            gameResult: {
+              isEnd: true,
+              isDraw: true,
+            }
+          });
+        }
         return;
       }
       this.refs.skip_turn.enable();
@@ -59,24 +81,6 @@ export default class Game extends React.Component {
     });
   }
 
-  getGameResult() {
-    const black_cnt = this.state.squareStates.filter((square_state) => square_state === "black").length;
-    const white_cnt = this.state.squareStates.filter((square_state) => square_state === "white").length;
-    const game_result = {
-      "is_draw" : false,
-      "winner" : "",
-      "winner_str" : "",
-      "diff" : 0
-    };
-    if (black_cnt === white_cnt) {
-      game_result.is_draw = true;
-    } else {
-      game_result.winner = (black_cnt > white_cnt) ? "black" : "white";
-      game_result.diff = Math.abs(black_cnt - white_cnt);
-    }
-    return game_result;
-  }
-
   noticeFromBoard() {
     this.changeTurn();
   }
@@ -101,7 +105,10 @@ export default class Game extends React.Component {
     */
     return (
       <div>
-        <Desc turn={this.state.turn}/>
+        <Desc
+          turn={this.state.turn}
+          gameResult={this.state.gameResult}
+        />
         <SkipTurn
           skipTurn={this.skipTurn}
           ref="skip_turn"

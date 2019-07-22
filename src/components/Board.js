@@ -9,6 +9,7 @@ export default class Board extends React.Component {
     }
     this.handleSquareClick = this.handleSquareClick.bind(this);
     this.getReverseSquareNums = this.getReverseSquareNums.bind(this);
+    this.getGameResult = this.getGameResult.bind(this);
   }
 
   getInitialSquareStates() {
@@ -222,6 +223,16 @@ export default class Board extends React.Component {
     this.setState({
       squareStates: this.getInitialSquareStates()
     });
+  }
+
+  getGameResult() {
+    const black_cnt = this.state.squareStates.filter((square_state) => square_state === "black").length;
+    const white_cnt = this.state.squareStates.filter((square_state) => square_state === "white").length;
+    const game_result = {
+      black: black_cnt,
+      white: white_cnt
+    };
+    return game_result;
   }
 
   render() {
