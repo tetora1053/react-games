@@ -10,6 +10,16 @@ export default class Desc extends React.Component {
     return (
       <div>
         <p><span>{turn_str}</span>のターン</p>
+        {(() => {
+          if (this.props.gameResult.isEnd) {
+            return (
+              <div>
+                <p>ゲーム終了</p>
+                <p>{this.props.gameResult.winner}の{this.props.gameResult.diff}勝ちです</p>
+              </div>
+            )
+          }
+        })()}
       </div>
     );
   }
