@@ -20,6 +20,7 @@ export default class Game extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     console.log(prevState.isEnd);
     if (prevState.isEnd) {
+      console.log("end completely");
       return;
     }
 
