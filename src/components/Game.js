@@ -71,7 +71,13 @@ export default class Game extends React.Component {
   resetGame() {
     this.refs.board.resetBoard();
     this.setState({
-      turn: 'black'
+      turn: 'black',
+      gameResult: {
+        isEnd: false,
+        isDraw: false,
+        winner: "",
+        diff: 0,
+      }
     });
   }
 
