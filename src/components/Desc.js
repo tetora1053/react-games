@@ -5,17 +5,23 @@ export default class Desc extends React.Component {
     super(props);
   }
 
+  getTurnStr(turn: string) {
+    if (turn == 'black') {
+      return "黒";
+    }
+    return "白";
+  }
+
   render() {
-    const turn_str = (this.props.turn === 'black') ? '黒' : '白';
     return (
       <div>
-        <p><span>{turn_str}</span>のターン</p>
+        <p><span>{this.getTurnStr(this.props.turn)}</span>のターン</p>
         {(() => {
           if (this.props.gameResult.isEnd) {
             return (
               <div>
                 <p>ゲーム終了</p>
-                <p>{this.props.gameResult.winner}の{this.props.gameResult.diff}勝ちです</p>
+                <p>{this.getTurnStr(this.props.gameResult.winner)}の{this.props.gameResult.diff}石勝ちです</p>
               </div>
             )
           }
