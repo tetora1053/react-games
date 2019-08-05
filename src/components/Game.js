@@ -3,6 +3,7 @@ import Desc from './Desc';
 import ResetGame from './ResetGame';
 import SkipTurn from './SkipTurn';
 import Board from './Board';
+import History from './History';
 
 export default class Game extends React.Component {
   constructor() {
@@ -18,7 +19,9 @@ export default class Game extends React.Component {
     }
     this.skipTurn = this.skipTurn.bind(this);
     this.resetGame = this.resetGame.bind(this);
-    this.noticeFromBoard = this.noticeFromBoard.bind(this);
+    this.switchTurn = this.switchTurn.bind(this);
+    this.handleRewindClick = this.handleRewindClick.bind(this);
+    this.handleForwardClick = this.handleForwardClick.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -28,7 +31,6 @@ export default class Game extends React.Component {
     }
 
     let res = this.canPutStone();
-    console.log("canPutStone res : ", res);
     if (!res) {
       let next_turn = (this.state.turn === "black") ? "white" : "black";
       let another_res = this.canPutStone(another_res);
@@ -64,10 +66,6 @@ export default class Game extends React.Component {
     return res;
   }
 
-  check() {
-    console.log("check");
-  }
-
   resetGame() {
     this.refs.board.resetBoard();
     this.setState({
@@ -87,28 +85,20 @@ export default class Game extends React.Component {
     });
   }
 
-  noticeFromBoard() {
-    this.changeTurn();
-  }
-
-  changeTurn() {
+  switchTurn() {
     const next = (this.state.turn === "black") ? "white" : "black";
     this.setState({turn: next});
   }
 
+  handleRewindClick() {
+    this.refs.board.handleRewindClick();
+  }
+
+  handleForwardClick() {
+    this.refs.board.handleForwardClick();
+  }
+
   render() {
-    /*
-    if (!this.state.squareStates.some((square_state) => square_state == "")) {
-      console.log("ゲーム終了")
-      const game_result = this.getGameResult();
-      if (game_result.is_draw) {
-        console.log("引き分けです");
-      } else {
-        const winner_str = (game_result.winner === "black") ? "黒" : "白";
-        console.log(winner_str + "の" + game_result.diff + "石勝ちです");
-      }
-    }
-    */
     return (
       <div>
         <Desc
@@ -122,8 +112,12 @@ export default class Game extends React.Component {
         <ResetGame resetGame={this.resetGame}/>
         <Board
           turn={this.state.turn}
-          noticeToGame={this.noticeFromBoard}
+          switchTurn={this.switchTurn}
           ref="board"
+        />
+        <History 
+          handleRewindClick={this.handleRewindClick}
+          handleForwardClick={this.handleForwardClick}
         />
       </div>
     );
