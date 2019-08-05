@@ -5,7 +5,11 @@ export default class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      squareStates: this.getInitialSquareStates()
+      squareStates: this.getInitialSquareStates(),
+      statesHistory: [
+        this.getInitialSquareStates(),
+      ],
+      currentStep: 0,
     }
     this.handleSquareClick = this.handleSquareClick.bind(this);
     this.getReverseSquareNums = this.getReverseSquareNums.bind(this);
@@ -51,8 +55,15 @@ export default class Board extends React.Component {
         this.setState({squareStates: square_states});
       }
     }
+
     if (res) {
-      this.props.noticeToGame();
+      this.setState({
+        statesHistory: this.state.statesHistory.slice(0, this.state.currentStep + 1).concat([
+          this.state.squareStates.slice()
+        ]),
+        currentStep: ++this.state.currentStep,
+      });
+      this.props.switchTurn();
     } else {
       console.log("you can't put stone here.");
     }
@@ -201,7 +212,6 @@ export default class Board extends React.Component {
   }
 
   canPutStone(specified_turn = null) {
-    console.log("canPutStone");
     const direction_arr = ["left", "right", "up", "down", "up-left", "up-right", "down-left", "down-right"];
     const turn = (specified_turn === null) ? this.props.turn : specified_turn;
     for (let square_number = 0; square_number < 64; square_number++) {
@@ -233,6 +243,30 @@ export default class Board extends React.Component {
       white: white_cnt
     };
     return game_result;
+  }
+
+  handleRewindClick() {
+    if (this.state.currentStep === 0) {
+      console.log("can't rewind");
+      return false;
+    }
+    this.setState({
+      squareStates: this.state.statesHistory[this.state.currentStep - 1].slice(),
+      currentStep: --this.state.currentStep,
+    });
+    this.props.switchTurn();
+  }
+
+  handleForwardClick() {
+    if (this.state.statesHistory.length === this.state.currentStep + 1) {
+      console.log("can't forward");
+      return false;
+    }
+    this.setState({
+      squareStates: this.state.statesHistory[this.state.currentStep + 1].slice(),
+      currentStep: ++this.state.currentStep,
+    });
+    this.props.switchTurn();
   }
 
   render() {
