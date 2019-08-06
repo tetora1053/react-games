@@ -30,11 +30,11 @@ export default class Game extends React.Component {
       return;
     }
 
-    let res = this.canPutStone();
-    if (!res) {
+    let can_put_square_nums = this.getCanPutSquareNums();
+    if (can_put_square_nums.length === 0) {
       let next_turn = (this.state.turn === "black") ? "white" : "black";
-      let another_res = this.canPutStone(another_res);
-      if (!another_res) {
+      let canPutSquareNumsAnother = this.getCanPutSquareNums(next_turn);
+      if (canPutSquareNumsAnother.length === 0) {
         console.log("game end");
         const game_result = this.refs.board.getGameResult();
         if (game_result.black !== game_result.white) {
@@ -58,11 +58,13 @@ export default class Game extends React.Component {
         return;
       }
       this.refs.skip_turn.enable();
+    } else {
+      this.refs.board.setCanPutSquareNums(can_put_square_nums);
     }
   }
 
-  canPutStone() {
-    let res = this.refs.board.canPutStone();
+  getCanPutSquareNums() {
+    let res = this.refs.board.getCanPutSquareNums();
     return res;
   }
 
