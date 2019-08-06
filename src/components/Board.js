@@ -10,10 +10,12 @@ export default class Board extends React.Component {
         this.getInitialSquareStates(),
       ],
       currentStep: 0,
+      canPutSquareNums: [],
     }
     this.handleSquareClick = this.handleSquareClick.bind(this);
     this.getReverseSquareNums = this.getReverseSquareNums.bind(this);
     this.getGameResult = this.getGameResult.bind(this);
+    this.setCanPutSquareNums = this.setCanPutSquareNums.bind(this);
   }
 
   getInitialSquareStates() {
@@ -211,7 +213,8 @@ export default class Board extends React.Component {
       return limit_square_number;
   }
 
-  canPutStone(specified_turn = null) {
+  getCanPutSquareNums(specified_turn = null) {
+    let can_put_square_nums = [];
     const direction_arr = ["left", "right", "up", "down", "up-left", "up-right", "down-left", "down-right"];
     const turn = (specified_turn === null) ? this.props.turn : specified_turn;
     for (let square_number = 0; square_number < 64; square_number++) {
@@ -222,11 +225,12 @@ export default class Board extends React.Component {
         let reverse_square_nums_result = {can_put: false, square_nums: []};
         this.getReverseSquareNums(reverse_square_nums_result, Number(square_number), turn, direction_arr[i], true, null);
         if (reverse_square_nums_result.can_put) {
-          return true;
+          can_put_square_nums.push(square_number);
+          break;
         }
       }
     }
-    return false;
+    return can_put_square_nums;
   }
 
   resetBoard() {
@@ -269,6 +273,12 @@ export default class Board extends React.Component {
     this.props.switchTurn();
   }
 
+  setCanPutSquareNums(can_put_square_nums = []) {
+    this.setState({
+      canPutSquareNums: can_put_square_nums,
+    });
+  }
+
   render() {
     let squareRows = [];
     for (let i = 0; i < 8; i++) {
@@ -278,6 +288,7 @@ export default class Board extends React.Component {
           row_number={i}
           handleSquareClick={this.handleSquareClick}
           squareStates={this.state.squareStates}
+          canPutSquareNums={this.state.canPutSquareNums}
         />
       );
     }
