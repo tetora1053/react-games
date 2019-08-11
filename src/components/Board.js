@@ -20,12 +20,12 @@ export default class Board extends React.Component {
 
   getInitialSquareStates() {
     let squareStates = [];
-    for (let i = 0; i < 64; i++) {
+    for (let i = 1; i <= 64; i++) {
       switch (true) {
-        case i === 27 || i === 36:
+        case i === 28 || i === 37:
           squareStates[i] = 'white';
           break;
-        case i === 28 || i === 35:
+        case i === 29 || i === 36:
           squareStates[i] = 'black';
           break;
         default:
@@ -74,15 +74,16 @@ export default class Board extends React.Component {
   getReverseSquareNums(result = {}, square_number, current_turn, direction, is_base = true, limit_square_number = null) {
     if (!is_base) {
       switch (true) {
-        case direction === 'left' && square_number < limit_square_number:
-        case direction === 'right' && square_number > limit_square_number:
-        case direction === 'up' && square_number < limit_square_number:
-        case direction === 'down' && square_number > limit_square_number:
-        case direction === 'up-left' && square_number < limit_square_number:
-        case direction === 'up-right' && square_number < limit_square_number:
-        case direction === 'down-left' && square_number > limit_square_number:
-        case direction === 'down-right' && square_number > limit_square_number:
-          return false;
+        case direction == 'left' && square_number < limit_square_number:
+        case direction == 'right' && square_number > limit_square_number:
+        case direction == 'up' && square_number < limit_square_number:
+        case direction == 'down' && square_number > limit_square_number:
+        case direction == 'up-left' && square_number < limit_square_number:
+        case direction == 'up-right' && square_number < limit_square_number:
+        case direction == 'down-left' && square_number > limit_square_number:
+        case direction == 'down-right' && square_number > limit_square_number:
+          result.can_put = false;
+          return;
       }
     }
     if (is_base) {
@@ -115,99 +116,101 @@ export default class Board extends React.Component {
         next_square_number = square_number + 9;
         break;
     }
+
+    switch (true) {
+      case direction == 'left' && next_square_number < limit_square_number:
+      case direction == 'right' && next_square_number > limit_square_number:
+      case direction == 'up' && next_square_number < limit_square_number:
+      case direction == 'down' && next_square_number > limit_square_number:
+      case direction == 'up-left' && next_square_number < limit_square_number:
+      case direction == 'up-right' && next_square_number < limit_square_number:
+      case direction == 'down-left' && next_square_number > limit_square_number:
+      case direction == 'down-right' && next_square_number > limit_square_number:
+        result.can_put = false;
+        return;
+    }
+
     const next_square_state = this.state.squareStates[next_square_number];
     if (next_square_state == undefined || next_square_state == '') {
       result.can_put = false;
-      return result;
+      return;
     }
     if ((is_base && next_square_state !== current_turn) || (!is_base && next_square_state !== current_turn)) {
       this.getReverseSquareNums(result, Number(next_square_number), current_turn, direction, false, limit_square_number);
       if (result.can_put) {
-        result.can_put = true;
         result.square_nums.push(next_square_number);
       }
     } else if (!is_base && next_square_state === current_turn) {
       result.can_put = true;
     }
-    return result;
+    return;
   }
 
   getLimitSquareNumber(direction, square_number) {
       let limit_square_number;
       let tmp_square_number;
       let number_in_row;
+      let current;
 
       switch (direction) {
         case 'left':
-          limit_square_number = square_number - (square_number % 8);
+          limit_square_number = square_number - ((square_number - 1) % 8);
           break;
 
         case 'right':
-          limit_square_number = square_number + (8 - (square_number % 8)) - 1;
+          limit_square_number = square_number + (8 - (square_number - 1) % 8) - 1;
           break;
 
         case 'up':
-          limit_square_number = square_number % 8;
+          if (square_number % 8 === 0) {
+            limit_square_number = 8;
+          } else {
+            limit_square_number = square_number % 8;
+          }
           break;
 
         case 'down':
-          limit_square_number = 64 - (8 - (square_number % 8));
+          if (square_number % 8 === 0) {
+            limit_square_number = 64;
+          } else {
+            limit_square_number = 64 - (8 - (square_number % 8));
+          }
           break;
 
         case 'up-left':
-          tmp_square_number = square_number;
-          number_in_row = tmp_square_number % 8;
-          while (true) {
-            if ((tmp_square_number - 9 >= 0) && (number_in_row > (tmp_square_number - 9) % 8)) {
-              tmp_square_number -= 9;
-              number_in_row = tmp_square_number % 8;
-              continue;
-            }
-            break;
+          current = square_number;
+          number_in_row = (current - 1) % 8;
+          while ((current - 9 >= 1) && (number_in_row > (current - 9 - 1) % 8)) {
+            current -= 9;
           }
-          limit_square_number = tmp_square_number;
+          limit_square_number = current;
           break;
 
         case 'up-right':
-          tmp_square_number = square_number;
-          number_in_row = tmp_square_number % 8;
-          while (true) {
-            if ((tmp_square_number - 7 >= 0) && (number_in_row < (tmp_square_number - 7) % 8)) {
-              tmp_square_number -= 7;
-              number_in_row = tmp_square_number % 8;
-              continue;
-            }
-            break;
+          current = square_number;
+          number_in_row = (current - 1) % 8;
+          while ((current - 7 >= 1) && (number_in_row < (current - 7 - 1) % 8)) {
+            current -= 7;
           }
-          limit_square_number = tmp_square_number;
+          limit_square_number = current;
           break;
 
         case 'down-left':
-          tmp_square_number = square_number;
-          number_in_row = tmp_square_number % 8;
-          while (true) {
-            if ((tmp_square_number + 7 <= 63) && (number_in_row > (tmp_square_number + 7) % 8)) {
-              tmp_square_number += 7;
-              number_in_row = tmp_square_number % 8;
-              continue;
-            }
-            break;
+          current = square_number;
+          number_in_row = (current - 1) % 8;
+          while ((current + 7 <= 64) && (number_in_row > (current + 7 - 1) % 8)) {
+            current += 7;
           }
-          limit_square_number = tmp_square_number;
+          limit_square_number = current;
           break;
 
         case 'down-right':
-          tmp_square_number = square_number;
-          number_in_row = tmp_square_number % 8;
-          while (true) {
-            if ((tmp_square_number + 9 <= 63) && (number_in_row < (tmp_square_number + 9) % 8)) {
-              tmp_square_number += 9;
-              number_in_row = tmp_square_number % 8;
-              continue;
-            }
-            break;
+          current = square_number;
+          number_in_row = (current - 1) % 8;
+          while ((current + 9 <= 64) && (number_in_row < (current + 9 - 1) % 8)) {
+            current += 9;
           }
-          limit_square_number = tmp_square_number;
+          limit_square_number = current;
           break;
       }
       return limit_square_number;
@@ -217,7 +220,7 @@ export default class Board extends React.Component {
     let can_put_square_nums = [];
     const direction_arr = ["left", "right", "up", "down", "up-left", "up-right", "down-left", "down-right"];
     const turn = (specified_turn === null) ? this.props.turn : specified_turn;
-    for (let square_number = 0; square_number < 64; square_number++) {
+    for (let square_number = 1; square_number <= 64; square_number++) {
       if (this.state.squareStates[square_number] != "") {
         continue;
       }
