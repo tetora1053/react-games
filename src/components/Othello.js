@@ -5,7 +5,7 @@ import SkipTurn from './SkipTurn';
 import Board from './Board';
 import History from './History';
 
-export default class Game extends React.Component {
+export default class Othello extends React.Component {
   constructor() {
     super();
     this.state = {
