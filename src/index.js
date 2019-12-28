@@ -3,15 +3,11 @@ import ReactDOM from 'react-dom';
 import ChildComponent from './components/App';
 import './index.css';
 
-class ParentComponent extends React.Component {
-  render() {
-    return (
-      <div>
-        <ChildComponent/>
-      </div>
-    )
-  }
-}
+const ParentComponent = () => (
+  <div>
+    <ChildComponent/>
+  </div>
+)
 
 ReactDOM.render(
   <ParentComponent/>,
