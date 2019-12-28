@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Game from './Game'
+import Othello from './Othello'
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 
 const App = () => (
@@ -10,7 +10,7 @@ const App = () => (
         <li><Link to='/othello'>オセロ</Link></li>
       </ul>
 
-      <Route path='/othello' component={Game} />
+      <Route path='/othello' component={Othello} />
     </div>
   </BrowserRouter>
 )
